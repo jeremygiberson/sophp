@@ -1,0 +1,14 @@
+{
+    "name": "jeremygiberson/sophp",
+    "description": "Service Oriented PHP",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Jeremy Giberson",
+            "email": "jeremygiberson@gmail.com"
+        }
+    ],
+    "require": {
+        "zendframework/zf2": "2.2.*"
+    }
+}
