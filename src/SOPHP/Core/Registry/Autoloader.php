@@ -74,6 +74,7 @@ class Autoloader extends StandardAutoloader implements  RegistryAwareInterface {
     {
         $generator = new ClassGenerator();
         $generator->setName($contract->getClassName());
+        // todo: generate functional proxy class based on service mapping description of contract
         $source = $generator->generate();
         eval($source);
         return class_exists($contract->getClassName(), false);
