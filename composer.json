@@ -9,6 +9,7 @@
         }
     ],
     "require": {
-        "zendframework/zf2": "2.2.*"
+        "zendframework/zendframework": ">=2.2.0",
+        "composer/composer": "~1.0@alpha"
     }
 }
