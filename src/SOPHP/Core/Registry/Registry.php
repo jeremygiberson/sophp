@@ -85,7 +85,7 @@ class Registry implements StorageAwareInterface {
             } else {
                 $services = array($class);
             }
-            $this->storage->checkAndSetItem($token, self::REGISTERED_SERVICES_KEY, $services);
+            $success = $this->storage->checkAndSetItem($token, self::REGISTERED_SERVICES_KEY, $services);
             if($retries++ > self::MAX_RETRIES) {
                 throw new RuntimeException("Unable to register service - CAS loop terminated after too many retries");
             }

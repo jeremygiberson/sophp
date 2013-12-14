@@ -3,6 +3,12 @@
 
 namespace SOPHP\Test\Core\Registry;
 
+use SOPHP\Core\Registry\Registry;
+use SOPHP\Zend\Cache\Storage\StorageMock;
+use Traversable;
+use Zend\Cache\Storage\Adapter;
+use Zend\Cache\Storage\Capabilities;
+use Zend\Cache\Storage\StorageInterface;
 use Zend\Json\Server\Server;
 use Zend\Json\Server\Smd;
 
@@ -13,7 +19,22 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRegisterServiceCasLoopWhenNothingInStorage() {
-        $this->markTestIncomplete('todo');
+        $class = 'foo';
+        $token = uniqid();
+        $success = true;
+
+        $storage = new StorageMock($this);
+        $storage->addMethodWill('getItem', array(), 'key', $success, $token);
+        $storage->addMethodWill('checkAndSetItem', true);
+        $storage->mock->expects($this->once())
+            ->method('checkAndSetItem')
+            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($class));
+
+        $registry = new Registry();
+        $registry->setStorageAdapter($storage);
+
+        $registry->registerService($class);
+
     }
     public function testRegisterServiceCasLoopWhenItemChangesAfterGet() {
         $this->markTestIncomplete('todo');
@@ -59,4 +80,3 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $smd->setContentType($options['contentType']);
     }
 }
- 
