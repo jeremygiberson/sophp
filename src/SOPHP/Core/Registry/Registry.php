@@ -3,8 +3,6 @@
 
 namespace SOPHP\Core\Registry;
 
-
-use RuntimeException;
 use SOPHP\Core\Registry\Exception\AlreadyRegistered;
 use SOPHP\Core\Registry\Exception\RegistrationFailed;
 use SOPHP\Core\Service\Contract;
@@ -19,29 +17,22 @@ class Registry implements StorageAwareInterface {
     protected $storage;
 
     /**
-     * Check if service has been registered. Optionally supply a contract to look for a specific version, otherwise
-     * any registered version is matched
      * @param $class
-     * @param Contract $contract
      * @return bool
      */
-    public function isServiceRegistered($class, Contract $contract = null)
+    public function isServiceRegistered($class)
     {
-        if(!$contract) {
-            $contract = new Contract($class, null, '*');
-        }
+        $contract = new Contract($class, null, '*');
         return $this->isContractInList($contract, $this->getRegisteredServices());
     }
 
     /**
      * @param $class
-     * @param Contract $contract
+     * @return Contract
      */
-    public function getServiceContract($class, Contract $contract = null)
+    public function getServiceContract($class)
     {
-        if(!$contract) {
-            $contract = new Contract($class, null, '*');
-        }
+        $contract = new Contract($class, null, '*');
         foreach($this->getRegisteredServices() as $registeredContract) {
             if($this->doContractsMatch($contract, $registeredContract)) {
                 return $registeredContract;
@@ -79,12 +70,15 @@ class Registry implements StorageAwareInterface {
     }
 
     /**
-     * @param $class
-     * @param $contract
+     * @param Contract $contract
      * @throws Exception\RegistrationFailed
+     * @throws \InvalidArgumentException
      * @throws Exception\AlreadyRegistered
      */
-    public function registerService($class, $contract) {
+    public function registerServiceContract(Contract $contract) {
+        if(!$contract) {
+            throw new \InvalidArgumentException("Contract must be provided");
+        }
         $key = self::REGISTERED_SERVICES_KEY;
         $retries = 0;
         do {
@@ -93,13 +87,13 @@ class Registry implements StorageAwareInterface {
                 if($this->isContractInList($contract, $services)) {
                     throw new AlreadyRegistered($contract);
                 }
-                $services[] = $class;
+                $services[] = $contract;
             } else {
-                $services = array($class);
+                $services = array($contract);
             }
             $success = $this->storage->checkAndSetItem($token, $key, $services);
             if($retries++ >= self::MAX_RETRIES) {
-                throw new RegistrationFailed("CAS reached max retries for [$class]");
+                throw new RegistrationFailed("CAS reached max retries for [{$contract->getClassName()}]");
             }
         } while(!$success);
     }
@@ -120,6 +114,7 @@ class Registry implements StorageAwareInterface {
 
     /**
      * Compare two contracts
+     * todo come up with a better method name
      * @param Contract $contract
      * @param Contract $test
      * @return bool

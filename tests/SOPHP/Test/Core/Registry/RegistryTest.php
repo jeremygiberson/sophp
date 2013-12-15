@@ -4,6 +4,7 @@
 namespace SOPHP\Test\Core\Registry;
 
 use SOPHP\Core\Registry\Registry;
+use SOPHP\Core\Service\Contract;
 use SOPHP\Zend\Cache\Storage\StorageMock;
 use Zend\Cache\Storage\Adapter;
 use Zend\Json\Server\Server;
@@ -15,8 +16,8 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         parent::setUp();
     }
 
-    public function testRegisterServiceCasLoopWhenItemChangesAfterGet() {
-        $class = 'foo';
+    public function testRegisterServiceContractCasLoopWhenItemChangesAfterGet() {
+        $contract = new Contract('foo', null,'*');
         $token = uniqid();
         $token2 = $token.'_v2';
 
@@ -25,25 +26,25 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $storage->addMethodWill('checkAndSetItem', false);
         $storage->mock->expects($this->at(1))
             ->method('checkAndSetItem')
-            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($class));
+            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($contract));
         $storage->addMethodWill('getItem', array(), 'key', true, $token2);
         $storage->addMethodWill('checkAndSetItem', true);
         $storage->mock->expects($this->at(3))
             ->method('checkAndSetItem')
-            ->with($token2, Registry::REGISTERED_SERVICES_KEY, array($class));
+            ->with($token2, Registry::REGISTERED_SERVICES_KEY, array($contract));
 
 
         $registry = new Registry();
         $registry->setStorageAdapter($storage);
 
-        $registry->registerService($class);
+        $registry->registerServiceContract($contract);
     }
 
     /**
      * @expectedException \SOPHP\Core\Registry\Exception\RegistrationFailed
      */
-    public function testRegisterServiceCasLoopExceptionWhenReachMaxRetries() {
-        $class = 'foo';
+    public function testRegisterServiceContractCasLoopExceptionWhenReachMaxRetries() {
+        $contract = new Contract('foo', null,'*');
         $token = uniqid();
 
         $storage = new StorageMock($this);
@@ -53,16 +54,16 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $storage->setMethodWill('checkAndSetItem', false);
         $storage->mock->expects($this->exactly(Registry::MAX_RETRIES+1))
             ->method('checkAndSetItem')
-            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($class));
+            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($contract));
 
         $registry = new Registry();
         $registry->setStorageAdapter($storage);
 
-        $registry->registerService($class);
+        $registry->registerServiceContract($contract);
     }
 
-    public function testRegisterServiceInitializesArray() {
-        $class = 'foo';
+    public function testRegisterServiceContractInitializesArray() {
+        $contract = new Contract('foo', null,'*');
         $token = uniqid();
         $success = true;
 
@@ -71,20 +72,21 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $storage->addMethodWill('checkAndSetItem', true);
         $storage->mock->expects($this->once())
             ->method('checkAndSetItem')
-            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($class));
+            ->with($token, Registry::REGISTERED_SERVICES_KEY, array($contract));
 
         $registry = new Registry();
         $registry->setStorageAdapter($storage);
 
-        $registry->registerService($class);
+        $registry->registerServiceContract($contract);
     }
 
-    public function testRegisterServiceAppendsArray() {
-        $class = 'foo';
+    public function testRegisterServiceContractAppendsArray() {
+        $contract = new Contract('foo', null,'*');
+        $contractBar = new Contract('bar', null, '*');
         $token = uniqid();
         $success = true;
-        $oldServices = array('bar');
-        $newServices = array('bar', $class);
+        $oldServices = array($contractBar);
+        $newServices = array($contractBar, $contract);
 
         $storage = new StorageMock($this);
         $storage->addMethodWill('getItem', $oldServices, 'key', $success, $token);
@@ -96,11 +98,25 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $registry = new Registry();
         $registry->setStorageAdapter($storage);
 
-        $registry->registerService($class);
+        $registry->registerServiceContract($contract);
     }
 
-    public function testRegisterServiceDoesNotAllowDuplicates() {
-        $this->markTestIncomplete('todo');
+    /**
+     * @expectedException \SOPHP\Core\Registry\Exception\AlreadyRegistered
+     */
+    public function testRegisterServiceContractDoesNotAllowDuplicates() {
+        $contract = new Contract('foo', null,'*');
+        $token = uniqid();
+        $success = true;
+        $oldServices = array($contract);
+
+        $storage = new StorageMock($this);
+        $storage->addMethodWill('getItem', $oldServices, 'key', $success, $token);
+
+        $registry = new Registry();
+        $registry->setStorageAdapter($storage);
+
+        $registry->registerServiceContract($contract);
     }
 
     /**
