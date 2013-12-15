@@ -83,3 +83,8 @@ SOPHP will abstract away the need to ask it for a 'ServiceInterface' so you can 
 
 How does it work? Pretty simply actually, the Registry Cloud provides an spl_autoloader. In your project when you ask for an Org\My\Component the autoloader will attempt to locate the class in your project tree and load it. If it can't find it, it will then check the Registry Cloud to see if such a service exists. If it does, it will generate a proxy automatically and return that to you instead. Despite being a proxy, the object will have the same interface and behave exactly the same--the business logic is simply deferred over the wire to where the Webservice is hosted, all transparently.
 
+Opt-In Cloud Preference
+=====
+It could also be the case that you actually have the package installed locally but would still prefer to use a proxy to a server instance of the service. For example, a service that requires a database resource that you dont have the configuration information for. In this case, you can configure the autoloader to always use the registry cloud to provide a proxied service for all services that require that resource. So, even if you have the package providing the service installed in the project directory you'll still get a proxy version of the service.
+
+
