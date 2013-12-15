@@ -17,7 +17,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRegisterServiceContractCasLoopWhenItemChangesAfterGet() {
-        $contract = new Contract('foo', null,'*');
+        $contract = new Contract('foo', new Smd(), '*');
         $token = uniqid();
         $token2 = $token.'_v2';
 
@@ -44,7 +44,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \SOPHP\Core\Registry\Exception\RegistrationFailed
      */
     public function testRegisterServiceContractCasLoopExceptionWhenReachMaxRetries() {
-        $contract = new Contract('foo', null,'*');
+        $contract = new Contract('foo', new Smd(), '*');
         $token = uniqid();
 
         $storage = new StorageMock($this);
@@ -63,7 +63,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRegisterServiceContractInitializesArray() {
-        $contract = new Contract('foo', null,'*');
+        $contract = new Contract('foo', new Smd(), '*');
         $token = uniqid();
         $success = true;
 
@@ -81,7 +81,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRegisterServiceContractAppendsArray() {
-        $contract = new Contract('foo', null,'*');
+        $contract = new Contract('foo', new Smd(), '*');
         $contractBar = new Contract('bar', null, '*');
         $token = uniqid();
         $success = true;
@@ -105,7 +105,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \SOPHP\Core\Registry\Exception\AlreadyRegistered
      */
     public function testRegisterServiceContractDoesNotAllowDuplicates() {
-        $contract = new Contract('foo', null,'*');
+        $contract = new Contract('foo', new Smd(), '*');
         $token = uniqid();
         $success = true;
         $oldServices = array($contract);

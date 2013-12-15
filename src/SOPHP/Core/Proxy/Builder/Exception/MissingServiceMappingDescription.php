@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SOPHP\Core\ProxyBuilder\Exception;
+namespace SOPHP\Core\Proxy\Builder\Exception;
 
 class MissingServiceMappingDescription extends \RuntimeException {
     public function __construct()

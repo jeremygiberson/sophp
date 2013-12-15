@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SOPHP\Core\ProxyBuilder;
+namespace SOPHP\Core\Proxy\Builder;
 
 
-interface ProxyBuilderInterface {
+interface BuilderInterface {
     /**
      * After build is called, the class name returned by the function should exist in scope
      * @param string $className
