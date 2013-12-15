@@ -5,6 +5,7 @@ namespace SOPHP\Core\Registry;
 
 
 use RuntimeException;
+use SOPHP\Core\Registry\Exception\RegistrationFailed;
 use SOPHP\Core\Service\Contract;
 use SOPHP\Zend\Cache\Storage\StorageAwareInterface;
 use Zend\Cache\Storage\StorageInterface;
@@ -75,19 +76,14 @@ class Registry implements StorageAwareInterface {
         $retries = 0;
         do {
             $services = $this->getRegisteredServices($success, $token);
-            // get failed, why? maybe key no longer available?
-            if(!$success && !$this->storage->hasItem($key)) {
-                $this->storage->touchItem($key);
-                $token = null;
-            }
             if(is_array($services)) {
                 $services[] = $class;
             } else {
                 $services = array($class);
             }
-            $success = $this->storage->checkAndSetItem($token, self::REGISTERED_SERVICES_KEY, $services);
-            if($retries++ > self::MAX_RETRIES) {
-                throw new RuntimeException("Unable to register service - CAS loop terminated after too many retries");
+            $success = $this->storage->checkAndSetItem($token, $key, $services);
+            if($retries++ >= self::MAX_RETRIES) {
+                throw new RegistrationFailed("CAS reached max retries for [$class]");
             }
         } while(!$success);
     }

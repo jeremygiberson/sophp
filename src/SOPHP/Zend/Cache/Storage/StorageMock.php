@@ -44,6 +44,7 @@ class StorageMock implements StorageInterface {
     public function setMethodWill($methodName, $returnValue, $paramOneValue = null, $paramNValue = null) {
         $args = func_get_args();
         array_shift($args);
+        array_shift($args);
         $this->will[$methodName] = (object)array(
             'returnValue' => $returnValue,
             'paramValues' => $args
@@ -95,7 +96,7 @@ class StorageMock implements StorageInterface {
         if(!isset($this->will[$methodName])) {
             return $result;
         }
-        $willSource = $this->will[$methodName];
+        $willSource = &$this->will[$methodName];
         if(empty($willSource)) {
             return $result;
         } else if(is_array($willSource)) {
@@ -121,7 +122,7 @@ class StorageMock implements StorageInterface {
     public function setOptions($options)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, &$args);
+        return $this->handleMethodCall(__FUNCTION__, &$args);
     }
 
     /**
@@ -132,7 +133,7 @@ class StorageMock implements StorageInterface {
     public function getOptions()
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__,&$args);
+        return $this->handleMethodCall(__FUNCTION__,&$args);
     }
 
     /**
@@ -147,7 +148,7 @@ class StorageMock implements StorageInterface {
     public function getItem($key, & $success = null, & $casToken = null)
     {
         $args = array($key, &$success, &$casToken);
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -160,7 +161,7 @@ class StorageMock implements StorageInterface {
     public function getItems(array $keys)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -173,7 +174,7 @@ class StorageMock implements StorageInterface {
     public function hasItem($key)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -186,7 +187,7 @@ class StorageMock implements StorageInterface {
     public function hasItems(array $keys)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -199,7 +200,7 @@ class StorageMock implements StorageInterface {
     public function getMetadata($key)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -212,7 +213,7 @@ class StorageMock implements StorageInterface {
     public function getMetadatas(array $keys)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -226,7 +227,7 @@ class StorageMock implements StorageInterface {
     public function setItem($key, $value)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -239,7 +240,7 @@ class StorageMock implements StorageInterface {
     public function setItems(array $keyValuePairs)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -253,7 +254,7 @@ class StorageMock implements StorageInterface {
     public function addItem($key, $value)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -266,7 +267,7 @@ class StorageMock implements StorageInterface {
     public function addItems(array $keyValuePairs)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -280,7 +281,7 @@ class StorageMock implements StorageInterface {
     public function replaceItem($key, $value)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
@@ -293,7 +294,7 @@ class StorageMock implements StorageInterface {
     public function replaceItems(array $keyValuePairs)
     {
         $args = &func_get_args();
-        $this->handleMethodCall(__FUNCTION__, $args);
+        return $this->handleMethodCall(__FUNCTION__, $args);
     }
 
     /**
