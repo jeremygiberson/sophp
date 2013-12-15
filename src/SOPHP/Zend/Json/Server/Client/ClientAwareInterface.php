@@ -11,10 +11,10 @@ interface ClientAwareInterface {
      * @param Client $client
      * @return mixed
      */
-    public function setRpcClient(Client $client);
+    public function _setRpcClient(Client $client);
 
     /**
      * @return Client
      */
-    public function getRpcClient();
+    public function _getRpcClient();
 } 

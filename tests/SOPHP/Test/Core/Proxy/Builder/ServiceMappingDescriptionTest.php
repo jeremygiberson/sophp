@@ -15,7 +15,9 @@ class ServiceMappingDescriptionTest extends PHPUnit_Framework_TestCase {
     public function testHappyPath() {
         $server = new Server();
         $server->setClass('SOPHP\Sample\Calculator\Calculator');
+        $uri = 'http://foobar';
         $smd = $server->getServiceMap();
+        $smd->setTarget($uri);
         $builder = new ServiceMappingDescription($smd);
 
         $class = 'MyCalculator';
@@ -34,7 +36,8 @@ class ServiceMappingDescriptionTest extends PHPUnit_Framework_TestCase {
 
         /** @var Proxy $proxy */
         $proxy = new $class();
-        $proxy->setRpcClient($rpcMock);
+        $proxy->_setRpcClient($rpcMock);
+        $this->assertEquals($uri, $proxy->_getUri());
         /** @var Calculator $proxy */
         $sum = $proxy->add($a, $b);
         $this->assertEquals($c, $sum);

@@ -65,6 +65,8 @@ class ServiceMappingDescription implements BuilderInterface {
 
         $this->generateMethods($generator);
 
+        $this->generateUriMethod($generator);
+
         $source = $generator->generate();
         var_dump($source);
         eval($source);
@@ -134,5 +136,13 @@ class ServiceMappingDescription implements BuilderInterface {
     protected function extendClass(ClassGenerator &$generator)
     {
         $generator->setExtendedClass('SOPHP\Core\Proxy\Proxy');
+    }
+
+    protected function generateUriMethod(ClassGenerator &$generator)
+    {
+        $method = new MethodGenerator('_getUri', array(), MethodGenerator::FLAG_PUBLIC);
+        $uri = addslashes($this->getSmd()->getTarget());
+        $method->setBody("return \"$uri\";");
+        $generator->addMethodFromGenerator($method);
     }
 }
