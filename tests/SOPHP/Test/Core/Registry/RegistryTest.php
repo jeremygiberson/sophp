@@ -5,10 +5,7 @@ namespace SOPHP\Test\Core\Registry;
 
 use SOPHP\Core\Registry\Registry;
 use SOPHP\Zend\Cache\Storage\StorageMock;
-use Traversable;
 use Zend\Cache\Storage\Adapter;
-use Zend\Cache\Storage\Capabilities;
-use Zend\Cache\Storage\StorageInterface;
 use Zend\Json\Server\Server;
 use Zend\Json\Server\Smd;
 
