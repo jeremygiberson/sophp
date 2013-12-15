@@ -76,9 +76,7 @@ class Registry implements StorageAwareInterface {
      * @throws Exception\AlreadyRegistered
      */
     public function registerServiceContract(Contract $contract) {
-        if(!$contract) {
-            throw new \InvalidArgumentException("Contract must be provided");
-        }
+        $this->validateContract($contract);
         $key = self::REGISTERED_SERVICES_KEY;
         $retries = 0;
         do {
@@ -96,6 +94,29 @@ class Registry implements StorageAwareInterface {
                 throw new RegistrationFailed("CAS reached max retries for [{$contract->getClassName()}]");
             }
         } while(!$success);
+    }
+
+    /**
+     * Validate the attributes of a contract
+     * @param Contract $contract
+     * @param bool $requireVersion
+     * @param bool $requireSmd
+     * @param bool $requireClassName
+     * @throws \InvalidArgumentException
+     */
+    protected function validateContract(Contract $contract, $requireVersion = true, $requireSmd = true, $requireClassName = true) {
+        if(!$contract) {
+            throw new \InvalidArgumentException("Contract must be provided");
+        }
+        if($requireClassName && !$contract->getClassName()) {
+            throw new \InvalidArgumentException("Class name must be provided in the contract");
+        }
+        if($requireSmd && !$contract->getSmd()) {
+            throw new \InvalidArgumentException("SMD must be provided in the contract");
+        }
+        if($requireVersion && !$contract->getVersion()) {
+            throw new \InvalidArgumentException("Version must be provided in the contract");
+        }
     }
 
     /**
