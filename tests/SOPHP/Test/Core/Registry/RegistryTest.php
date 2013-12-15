@@ -99,6 +99,10 @@ class RegistryTest extends \PHPUnit_Framework_TestCase {
         $registry->registerService($class);
     }
 
+    public function testRegisterServiceDoesNotAllowDuplicates() {
+        $this->markTestIncomplete('todo');
+    }
+
     /**
      * If this test fails: Bug has been fixed, update code to use setServices w/ services key
      * @expectedException \Zend\Json\Server\Exception\InvalidArgumentException
