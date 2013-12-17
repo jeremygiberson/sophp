@@ -68,7 +68,7 @@ class ServiceMappingDescription implements BuilderInterface {
         $this->generateUriMethod($generator);
 
         $source = $generator->generate();
-        var_dump($source);
+
         eval($source);
         if(!class_exists($className,false)) {
             throw new BuildFailed($className);
@@ -109,7 +109,7 @@ class ServiceMappingDescription implements BuilderInterface {
      * @param array $param
      * @param MethodGenerator $method
      */
-    private function generateParam($position, array $param, MethodGenerator &$method)
+    protected function generateParam($position, array $param, MethodGenerator &$method)
     {
         $parameter = new ParameterGenerator();
         $parameter->setPosition($position);

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SOPHP\Test\Core\Registry;
+namespace SOPHP\Unit\Core\Registry;
 
 use SOPHP\Core\Registry\Registry;
 use SOPHP\Core\Service\Contract;
