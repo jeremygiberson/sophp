@@ -9,3 +9,5 @@ require_once HOME . 'vendor/autoload.php';
 $autoloader = new StandardAutoloader();
 $autoloader->registerNamespace('SOPHP', HOME . 'src/SOPHP');
 $autoloader->register();
+
+date_default_timezone_set('UTC');
