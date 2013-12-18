@@ -22,6 +22,7 @@ class ProxyTest extends WebServer {
 
         $smd = new Smd();
         $spec = json_decode($result->getBody(),true);
+        var_dump($result->getBody());
         $smd->setOptions($spec);
         $smd->setTarget($this->getWebServerUri() . "/$class");
 
