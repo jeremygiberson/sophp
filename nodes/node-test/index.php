@@ -18,14 +18,26 @@ $autoloader->register();
 /**
  * determine service to handle from URI
  */
-//var_dump($_SERVER['REQUEST_URI'], $_SERVER);
 
 $segments = explode('/', $_SERVER['REQUEST_URI']);
-$className = $segments[0];
-if(!file_exists($className)){
-    return json_encode(array('error' => 'failed to load service ' . $className));
+$className = $segments[1];
+
+if(!class_exists($className)){
+    echo json_encode(array('error' => 'failed to load service ' . $className));
+    return;
 }
 
 $server = new Server();
 $server->setClass($className);
+
+if('GET' == $_SERVER['REQUEST_METHOD']) {
+    //$server->setTarget($_SERVER['REQUEST_URI']);
+    $smd = $server->getServiceMap();
+    $smd->setTarget($_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI']);
+    header('Content-Type: application/json');
+    echo $smd;
+
+    return;
+}
+
 echo $server->handle();

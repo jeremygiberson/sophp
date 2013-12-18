@@ -106,6 +106,13 @@ abstract class WebServer extends PHPUnit_Framework_TestCase {
         return WEB_SERVER_PORT;
     }
 
+    /**
+     * @return string
+     */
+    protected static function getWebServerUri() {
+        return 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+    }
+
     /** @return string absolute path to router file */
     abstract protected function getRouterFile();
 } 

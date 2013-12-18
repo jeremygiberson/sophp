@@ -63,7 +63,7 @@ abstract class Proxy implements ClientAwareInterface {
         print_r($method . ' called with ' . join(', ', $arguments));
         print_r(', will forward to ' . $this->_getUri());
         $result = $this->_getRpcClient()->call($method, $arguments);
-        print_r(', and return ' . $result);
+        print_r(', and return ' . $result . PHP_EOL);
         return $result;
     }
 }
