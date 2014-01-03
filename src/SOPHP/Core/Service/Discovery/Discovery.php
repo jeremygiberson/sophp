@@ -3,38 +3,66 @@
 
 namespace SOPHP\Core\Service\Discovery;
 
-
-use SOPHP\Core\Service\Discovery\Rpc\Adapter;
+use SOPHP\Core\Service\Discovery\Registry\Registry;
+use SOPHP\Core\Service\Service;
 
 class Discovery {
-    /** @var  Adapter */
-    protected $adapter;
+    /** @var  Registry */
+    protected $registry;
 
-    public function registerService($interface, $implementation) {
-        $map = $this->adapter->getServiceMap();
-        //$this->registry->add($interface,$map);
+    /**
+     * @param \SOPHP\Core\Service\Discovery\Registry\Registry $registry
+     */
+    public function setRegistry($registry)
+    {
+        $this->registry = $registry;
     }
 
+    /**
+     * @return \SOPHP\Core\Service\Discovery\Registry\Registry
+     */
+    public function getRegistry()
+    {
+        return $this->registry;
+    }
+
+    /**
+     * @param string $interface
+     * @param Service $service
+     */
+    public function registerService($interface, Service $service) {
+        $this->registry->addService($interface, $service);
+    }
+
+    /**
+     * todo this should probably be protected by some kind of token so only an
+     * authority can remove services (like the server that registered the service
+     * or a service manager server)
+     * @param string $interface
+     */
     public function unregisterService($interface) {
-        $map = $this->adapter->getServiceMap();
-        //$this->registry->remove($interface,$map);
+        $this->registry->removeService($interface);
     }
 
     /**
      * @return array
      */
     public function queryForNames() {
-        return array();
+        return array_keys($this->registry->getList());
     }
 
     /**
      * @param mixed $interface
+     * @throws \RuntimeException
      * @return mixed
      */
     public function getInstance($interface) {
-        $builder = $this->adapter->getProxyBuilder();
-        $class = $builder->build($interface);
-        $class .= uniqid();
-        return new $class();
+        if(!$this->registry->hasService($interface)) {
+            throw new \RuntimeException("`$interface` is not a registered service");
+        }
+        $service = $this->registry->getService($interface);
+
+        // todo return the actual proxy instance of the service
+        return $service;
     }
 } 
