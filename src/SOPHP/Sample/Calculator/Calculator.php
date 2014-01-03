@@ -4,7 +4,8 @@
 namespace SOPHP\Sample\Calculator;
 
 
-class Calculator {
+class Calculator implements CalculatorInterface
+{
     /**
      * Compute the sum of two numbers, augend+addend
      * @param float $augend
@@ -64,5 +65,12 @@ class Calculator {
      */
     public function power($base, $exponent) {
         return pow($base, $exponent);
+    }
+
+    /**
+     * @return string
+     */
+    public function notAnExposedMethod() {
+        return "This method is not exposed through service discovery";
     }
 } 
