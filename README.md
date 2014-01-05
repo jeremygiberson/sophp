@@ -16,6 +16,7 @@ Sample Case
 Frequently when talking about SOA the immediate instinct is to "Webservice"-ify several of the domain components. So that the persistence & business logic is located in a central project and other projects can make use of that logic by calling out to it. For example, lets say we want to add a contact to our application. 
 
 We might implement such a task with the following frontend and backend code:
+
     <?php
     // somewhere in the application mvc, we process form data
     function addContact($data) {
@@ -67,24 +68,15 @@ Service Oriented means: You should be able to
 Strategy
 ====
 
-SOPHP intends to utilize is the proxy and registry pattern at it's core. Instead of instantiating a Service or a Webservice, you ask the registry for a ServiceInterface--which can be satisfied by either a Service or Webservice. The Service Registry will automatically determine the appropriate concrete to satisfy the interface. 
+SOPHP utilizes proxy and registry patterns at it's core. Instead of instantiating a Service or a Webservice, you register services. Using service discovery you retreive an instance of a service which can be satisfied by either a Service or Webservice. The Service Registry will automatically determine the appropriate concrete to satisfy the interface. An overly simplified diagram:
 
     [ServiceInterface]       [Registry           ]
       ^            ^         |+ get(serviceName) ]
       |            |
     [Service]<---[Proxy]     $service = Registry::get('ServiceInterface'); // Service or Proxy
   
-However, instead of actually asking the registry directly for a ServiceInterface SOPHP will provide you the ability to get instances through DependencyInjection or simple class instantiation. 
 
-SOPHP will abstract away the need to ask it for a 'ServiceInterface' so you can instead ask it for a 'Service'. SOPHP does it's thing and you end up with a Service or you end up with a Proxy.
+Of course for simplificaton we'll provide hooks so instances of ServiceInterface will be provided through DependencyInjection.
 
-    $service = new Org\My\Component(); // might be a Component, might be a Proxy for Component. 
-    $service->doSomething(); // might be doing something locally, or over the wire -- you don't know or care
-
-How does it work? Pretty simply actually, the Registry Cloud provides an spl_autoloader. In your project when you ask for an Org\My\Component the autoloader will attempt to locate the class in your project tree and load it. If it can't find it, it will then check the Registry Cloud to see if such a service exists. If it does, it will generate a proxy automatically and return that to you instead. Despite being a proxy, the object will have the same interface and behave exactly the same--the business logic is simply deferred over the wire to where the Webservice is hosted, all transparently.
-
-Opt-In Cloud Preference
-=====
-It could also be the case that you actually have the package installed locally but would still prefer to use a proxy to a server instance of the service. For example, a service that requires a database resource that you dont have the configuration information for. In this case, you can configure the autoloader to always use the registry cloud to provide a proxied service for all services that require that resource. So, even if you have the package providing the service installed in the project directory you'll still get a proxy version of the service.
 
 
