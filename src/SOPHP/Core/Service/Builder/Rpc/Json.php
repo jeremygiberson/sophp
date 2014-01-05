@@ -38,7 +38,7 @@ class Json implements BuilderInterface {
 
         $server = $this->addMethodsToServiceMap($reflection, $concrete);
         $definitions = $server->getFunctions();
-        return $this->createService($uri, $definitions);
+        return $this->createService($interface, $uri, $definitions);
     }
 
     /**
@@ -77,13 +77,15 @@ class Json implements BuilderInterface {
     }
 
     /**
+     * @param string $interface
      * @param Uri $uri
      * @param Definition $definitions
      * @return Service
      */
-    protected function createService(Uri $uri, Definition $definitions)
+    protected function createService($interface, Uri $uri, Definition $definitions)
     {
         $service = new Service();
+        $service->setInterface($interface);
         $service->setUri($uri);
         $service->setDefinition($definitions);
         $service->setServerBuilderClass(self::SERVER_BUILDER);
