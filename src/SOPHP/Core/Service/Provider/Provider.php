@@ -4,12 +4,19 @@
 namespace SOPHP\Core\Service\Provider;
 
 
+use SOPHP\Core\Proxy\Builder\ServiceBuilder;
+use SOPHP\Core\Proxy\Proxy;
+use SOPHP\Core\Service\Provider\Exception\MissingServicePreference;
 use SOPHP\Core\Service\Service;
 use SplObjectStorage;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Provider {
+class Provider implements ServiceLocatorAwareInterface {
     /** @var  SplObjectStorage */
     protected $strategyPreferences;
+    /** @var  ServiceLocatorInterface */
+    protected $serviceLocator;
 
     /**
      * @param \SplObjectStorage $strategyPreferences
@@ -70,14 +77,47 @@ class Provider {
         }
     }
 
-
-    protected function getLocalInstance($service)
+    /**
+     * @param Service $service
+     * @return mixed
+     * @throws Exception\MissingServicePreference
+     */
+    protected function getLocalInstance(Service $service)
     {
-        // todo
+        if(!$this->getServiceLocator()->has($service->getInterface())) {
+            throw new MissingServicePreference($service);
+        }
+        return $this->getServiceLocator()->get($service->getInterface());
     }
 
-    protected function getProxyInstance($service)
+    /**
+     * @param Service $service
+     * @return Proxy
+     */
+    protected function getProxyInstance(Service $service)
     {
-        // todo
+        $builder = new ServiceBuilder($service);
+        $class = $builder->build(uniqid('proxy'));
+        return new $class();
     }
-} 
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+}

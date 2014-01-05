@@ -18,6 +18,8 @@ class Service implements \Serializable {
     /** @var  Uri */
     protected $uri;
     /** @var  string */
+    protected $interface;
+    /** @var  string */
     protected $serverBuilderClass;
     /** @var  string */
     protected $clientBuilderClass;
@@ -101,6 +103,24 @@ class Service implements \Serializable {
     {
         return $this->uri;
     }
+
+    /**
+     * @param string $interface
+     */
+    public function setInterface($interface)
+    {
+        $this->interface = $interface;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInterface()
+    {
+        return $this->interface;
+    }
+
+
 
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
