@@ -3,12 +3,17 @@
 
 namespace SOPHP\Core\Service\Discovery;
 
+use SOPHP\Core\Service\Discovery\Exception\ServiceNotRegistered;
 use SOPHP\Core\Service\Discovery\Registry\Registry;
+use SOPHP\Core\Service\Provider\Provider;
+use SOPHP\Core\Service\Provider\Strategy;
 use SOPHP\Core\Service\Service;
 
 class Discovery {
     /** @var  Registry */
     protected $registry;
+    /** @var  Provider */
+    protected $provider;
 
     /**
      * @param \SOPHP\Core\Service\Discovery\Registry\Registry $registry
@@ -27,11 +32,30 @@ class Discovery {
     }
 
     /**
+     * @param \SOPHP\Core\Service\Provider\Provider $provider
+     */
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
+    }
+
+    /**
+     * @return \SOPHP\Core\Service\Provider\Provider
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+
+
+
+    /**
      * @param string $interface
      * @param Service $service
      */
     public function registerService($interface, Service $service) {
         $this->registry->addService($interface, $service);
+        $this->getProvider()->setStrategyPreference($service, new Strategy(Strategy::Local));
     }
 
     /**
@@ -48,21 +72,20 @@ class Discovery {
      * @return array
      */
     public function queryForNames() {
-        return array_keys($this->registry->getList());
+        return array_keys($this->registry->getAllServices());
     }
 
     /**
      * @param mixed $interface
-     * @throws \RuntimeException
+     * @throws ServiceNotRegistered
      * @return mixed
      */
     public function getInstance($interface) {
         if(!$this->registry->hasService($interface)) {
-            throw new \RuntimeException("`$interface` is not a registered service");
+            throw new ServiceNotRegistered("`$interface` is not a registered service");
         }
         $service = $this->registry->getService($interface);
 
-        // todo return the actual proxy instance of the service
-        return $service;
+        return $this->provider->getInstance($service);
     }
 } 

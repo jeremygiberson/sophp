@@ -61,7 +61,7 @@ class Registry {
     /**
      * @return Service[]
      */
-    public function getList() {
+    public function getAllServices() {
         $services = array();
         foreach($this->getStorage()->getAll() as $key => $value) {
             $services[$key] = unserialize($value);

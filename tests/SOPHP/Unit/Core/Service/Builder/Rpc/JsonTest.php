@@ -1,9 +1,10 @@
 <?php
 
 
-use SOPHP\Core\Service\Discovery\Rpc\Json;
+use SOPHP\Core\Service\Builder\Rpc\Json;
 use SOPHP\Sample\Calculator\Calculator;
 use Zend\Json\Server\Smd\Service;
+use Zend\Uri\Uri;
 
 class JsonTest extends PHPUnit_Framework_TestCase {
     protected $interface;
@@ -17,16 +18,16 @@ class JsonTest extends PHPUnit_Framework_TestCase {
         $this->concreteMethodThatDoesNotBelongToInterface = 'notAnExposedMethod';
     }
 
-    public function testGetServiceMapReturnsMapForInterface() {
+    public function testBuildReturnsDefinitionForInterface() {
         $interfaceMethods = $this->getClassMethodNames($this->interface);
         $concreteMethods = $this->getClassMethodNames($this->concrete);
 
         $serviceNames = array();
         $json = new Json($this->interface, $this->concrete);
-        $map = $json->getServiceMap();
-        foreach($map->getServices() as $service) {
-            /** @var $service Service */
-            $name = $service->getName();
+        $definition = $json->build(new Uri(), $this->interface, $this->concrete);
+        foreach($definition->getMethods() as $method) {
+            /** @var $method Service */
+            $name = $method->getName();
             $this->assertContains($name, $interfaceMethods);
             $this->assertContains($name, $concreteMethods);
             $serviceNames[] = $name;
