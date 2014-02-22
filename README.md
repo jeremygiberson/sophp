@@ -68,15 +68,9 @@ Service Oriented means: You should be able to
 Strategy
 ====
 
-SOPHP utilizes proxy and registry patterns at it's core. Instead of instantiating a Service or a Webservice, you register services. Using service discovery you retreive an instance of a service which can be satisfied by either a Service or Webservice. The Service Registry will automatically determine the appropriate concrete to satisfy the interface. An overly simplified diagram:
+SOPHP utilizes Proxy and Service Locator patterns at it's core. Using the service locator an instance is provided that satisfies the specified interface. Internally the locator determines if the concrete can be satisifed locally. If it cannot, a proxy to a remote concrete is generated. 
 
-    [ServiceInterface]       [Registry           ]
-      ^            ^         |+ get(serviceName) ]
-      |            |
-    [Service]<---[Proxy]     $service = Registry::get('ServiceInterface'); // Service or Proxy
-  
 
-Of course for simplificaton we'll provide hooks so instances of ServiceInterface will be provided through DependencyInjection.
 
 
 
