@@ -12,6 +12,12 @@ use SplObjectStorage;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * Class Provider
+ * Provides concrete instance of service based on strategy preference (configurable).
+ * Strategy can force proxy usage over local usage even when local is available.
+ * @package SOPHP\Core\Service\Provider
+ */
 class Provider implements ServiceLocatorAwareInterface {
     /** @var  SplObjectStorage */
     protected $strategyPreferences;
