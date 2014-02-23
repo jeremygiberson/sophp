@@ -10,6 +10,8 @@ use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Zend\Server\Definition;
+use Zend\Server\Method\Definition as MethodDefinition;
+use Zend\Server\Method\Parameter;
 
 class ServiceBuilder implements BuilderInterface {
     /** @var  Service */
@@ -92,13 +94,15 @@ class ServiceBuilder implements BuilderInterface {
     }
 
     /**
-     * @param Definition $method
+     * @param MethodDefinition $method
      * @param $generator
      */
-    protected function generateMethod(Definition $method, ClassGenerator &$generator)
+    protected function generateMethod(MethodDefinition $method, ClassGenerator &$generator)
     {
         $methodGenerator = new MethodGenerator($method->getName());
-        foreach($method->getParams() as $position => $param) {
+        $prototypes = $method->getPrototypes();
+        $parameters = $prototypes[count($prototypes)-1]->getParameterObjects();
+        foreach($parameters as $position => $param) {
             $this->generateParam($position, $param, $methodGenerator);
         }
 
@@ -111,27 +115,26 @@ class ServiceBuilder implements BuilderInterface {
 
     /**
      * @param $position
-     * @param array $param
+     * @param Parameter $parameter
      * @param MethodGenerator $method
      */
-    protected function generateParam($position, array $param, MethodGenerator &$method)
+    protected function generateParam($position, Parameter $parameter, MethodGenerator &$method)
     {
-        $parameter = new ParameterGenerator();
-        $parameter->setPosition($position);
-        $parameter->setName(@$param['name'] ?: 'param'.$position);
-        if(isset($param['type']) && is_array($param['type'])) {
-            // todo docblock join w/ |
-            $parameter->setType('mixed');
-        } else if (isset($param['type'])) {
-            $parameter->setType($param['type']);
-        }
-        if(isset($param['default'])) {
-            $parameter->setDefaultValue($param['default']);
-        } else if(isset($param['optional']) && $param['optional']) {
-            $parameter->setDefaultValue(null);
+        $parameterGenerator = new ParameterGenerator();
+        $parameterGenerator->setPosition($position);
+        $parameterGenerator->setName($parameter->getName() ?: 'param'.$position);
+
+        // TODO set type
+        $type = $parameter->getType();
+
+
+        if($parameter->getDefaultValue()) {
+            $parameterGenerator->setDefaultValue($parameter->getDefaultValue());
+        } else if($parameter->isOptional()) {
+            $parameterGenerator->setDefaultValue(null);
         }
 
-        $method->setParameter($parameter);
+        $method->setParameter($parameterGenerator);
     }
 
     /**
@@ -141,6 +144,7 @@ class ServiceBuilder implements BuilderInterface {
     protected function extendClass(ClassGenerator &$generator)
     {
         $generator->setExtendedClass('SOPHP\Core\Proxy\Proxy');
+        $generator->setImplementedInterfaces(array($this->getService()->getInterface()));
     }
 
     protected function generateUriMethod(ClassGenerator &$generator)

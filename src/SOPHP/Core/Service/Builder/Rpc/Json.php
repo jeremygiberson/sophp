@@ -5,7 +5,7 @@ namespace SOPHP\Core\Service\Builder\Rpc;
 
 
 use ReflectionClass;
-use SOPHP\Core\Service\Adapter\BuilderInterface;
+use SOPHP\Core\Service\Builder\BuilderInterface;
 use SOPHP\Core\Service\Service;
 use Zend\Json\Server\Server;
 use Zend\Json\Server\Smd;
@@ -23,7 +23,7 @@ class Json implements BuilderInterface {
      * @param string $interface
      * @param mixed $concrete
      * @throws \InvalidArgumentException
-     * @return \SOPHP\Core\Service\Service|\Zend\Server\Definition
+     * @return \SOPHP\Core\Service\Service
      */
     public function build(Uri $uri, $interface, $concrete = null) {
         if(!interface_exists($interface)) {
@@ -38,6 +38,7 @@ class Json implements BuilderInterface {
 
         $server = $this->addMethodsToServiceMap($reflection, $concrete);
         $definitions = $server->getFunctions();
+        $definitions->setOverwriteExistingMethods(false);
         return $this->createService($interface, $uri, $definitions);
     }
 

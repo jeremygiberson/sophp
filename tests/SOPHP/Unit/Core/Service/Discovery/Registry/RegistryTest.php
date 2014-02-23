@@ -43,7 +43,7 @@ class RegistryTest extends PHPUnit_Framework_TestCase {
         $services = array(self::TestInterface=>$service);
         $this->registry->addService(self::TestInterface, $service);
         $test = $this->registry->getAllServices();
-        $this->assertEquals($services, $test);
+        $this->assertEquals(serialize($services), serialize($test));
     }
 
     /**

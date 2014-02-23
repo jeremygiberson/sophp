@@ -24,12 +24,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase {
         $serializedServices =  serialize(array($key => $value));
 
         $storage = new StorageMock($this);
-        $storage->addMethodWill('getItem', array(), Cache::SERVICE_LIST_KEY, true, $token);
+        $storage->addMethodWill('getItem', serialize(array()), Cache::SERVICE_LIST_KEY, true, $token);
         $storage->addMethodWill('checkAndSetItem', false);
         $storage->mock->expects($this->at(1))
             ->method('checkAndSetItem')
             ->with($token, Cache::SERVICE_LIST_KEY, $serializedServices);
-        $storage->addMethodWill('getItem', array(), 'key', true, $token2);
+        $storage->addMethodWill('getItem', serialize(array()), 'key', true, $token2);
         $storage->addMethodWill('checkAndSetItem', true);
         $storage->mock->expects($this->at(3))
             ->method('checkAndSetItem')
@@ -40,7 +40,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \SOPHP\Core\Registry\Exception\RegistrationFailed
+     * @expectedException \SOPHP\Core\Service\Discovery\Registry\Exception\RegistrationFailed
      */
     public function testRegisterServiceContractCasLoopExceptionWhenReachMaxRetries() {
         $key = uniqid('key');
@@ -49,7 +49,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase {
         $serializedServices =  serialize(array($key => $value));
 
         $storage = new StorageMock($this);
-        $storage->setMethodWill('getItem', array(), Cache::SERVICE_LIST_KEY, true, $token);
+        $storage->setMethodWill('getItem', serialize(array()), Cache::SERVICE_LIST_KEY, true, $token);
         $storage->mock->expects($this->exactly(Cache::MAX_RETRIES+1))
             ->method('getItem');
         $storage->setMethodWill('checkAndSetItem', false);

@@ -3,9 +3,8 @@
 
 namespace SOPHP\Core\Service\Discovery\Registry\Storage;
 
-
-use SOPHP\Core\Registry\Exception\AlreadyRegistered;
-use SOPHP\Core\Registry\Exception\RegistrationFailed;
+use SOPHP\Core\Service\Discovery\Registry\Exception\AlreadyRegistered;
+use SOPHP\Core\Service\Discovery\Registry\Exception\RegistrationFailed;
 use SOPHP\Zend\Cache\Storage\StorageAwareInterface;
 use Zend\Cache\Storage\StorageInterface;
 
@@ -37,8 +36,6 @@ class Cache implements StorageAwareInterface, AdapterInterface {
     /**
      * @param string $key
      * @param string $value
-     * @throws \SOPHP\Core\Registry\Exception\RegistrationFailed
-     * @throws \SOPHP\Core\Registry\Exception\AlreadyRegistered
      */
     public function add($key, $value)
     {
@@ -64,7 +61,6 @@ class Cache implements StorageAwareInterface, AdapterInterface {
 
     /**
      * @param string $key
-     * @throws \SOPHP\Core\Registry\Exception\RegistrationFailed
      */
     public function remove($key)
     {
@@ -159,6 +155,6 @@ class Cache implements StorageAwareInterface, AdapterInterface {
      * @param int $time milliseconds
      */
     protected function sleep($time) {
-        sleep($time);
+        usleep($time);
     }
 }

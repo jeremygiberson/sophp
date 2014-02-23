@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SOPHP\Core\Service\Adapter;
+namespace SOPHP\Core\Service\Builder;
 
 
 use SOPHP\Core\Service\Service;

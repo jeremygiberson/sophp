@@ -12,6 +12,7 @@ class Service implements \Serializable {
     const SERIALIZE_KEY_CLIENT = 'client';
     const SERIALIZE_KEY_SERVER = 'server';
     const SERIALIZE_KEY_DEFINITION = 'definition';
+    const SERIALIZE_KEY_INTERFACE = 'interface';
 
     /** @var  Definition */
     protected $definition;
@@ -132,9 +133,10 @@ class Service implements \Serializable {
     {
         return serialize(array(
             self::SERIALIZE_KEY_URI => $this->uri->toString(),
+            self::SERIALIZE_KEY_INTERFACE => $this->interface,
             self::SERIALIZE_KEY_CLIENT => $this->clientBuilderClass,
             self::SERIALIZE_KEY_SERVER => $this->serverBuilderClass,
-            self::SERIALIZE_KEY_DEFINITION => $this->definition->toArray()
+            self::SERIALIZE_KEY_DEFINITION => serialize($this->definition)
         ));
     }
 
@@ -151,8 +153,9 @@ class Service implements \Serializable {
     {
         $array = unserialize($serialized);
         $this->setUri(new Uri($array[self::SERIALIZE_KEY_URI]));
+        $this->setInterface($array[self::SERIALIZE_KEY_INTERFACE]);
         $this->setClientBuilderClass($array[self::SERIALIZE_KEY_CLIENT]);
         $this->setServerBuilderClass($array[self::SERIALIZE_KEY_SERVER]);
-        $this->setDefinition(new Definition($array[self::SERIALIZE_KEY_DEFINITION]));
+        $this->setDefinition(unserialize($array[self::SERIALIZE_KEY_DEFINITION]));
     }
 }

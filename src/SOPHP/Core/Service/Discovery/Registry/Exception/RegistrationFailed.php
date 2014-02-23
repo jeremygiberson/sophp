@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SOPHP\Core\Registry\Exception;
+namespace SOPHP\Core\Service\Discovery\Registry\Exception;
 
 
 use Exception;

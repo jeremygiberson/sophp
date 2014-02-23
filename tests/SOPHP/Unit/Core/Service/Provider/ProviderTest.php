@@ -4,6 +4,7 @@
 use SOPHP\Core\Service\Builder\Rpc\Json;
 use SOPHP\Core\Service\Provider\Provider;
 use SOPHP\Core\Service\Provider\Strategy;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Uri\Uri;
 
 class ProviderTest extends PHPUnit_Framework_TestCase {
@@ -17,12 +18,17 @@ class ProviderTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         parent::setUp();
+
+        $serviceLocator = new ServiceManager();
+        $serviceLocator->setInvokableClass(self::TestInterface, self::TestClass);
+
         $this->provider = new Provider();
+        $this->provider->setServiceLocator($serviceLocator);
     }
 
     public function testGetStrategyPreferencesReturnsLazyInitializationInstance(){
         $test = $this->provider->getStrategyPreferences();
-        $this->assertInstanceOf('SplObjectPreference', $test);
+        $this->assertInstanceOf('SplObjectStorage', $test);
     }
 
     public function testGetStrategyPreferencesReturnsExistingInstance() {
@@ -48,6 +54,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase {
         $service = $this->getService();
         $this->provider->setStrategyPreference($service,new Strategy(Strategy::Proxy));
         $test = $this->provider->getInstance($service);
+
         $this->assertFalse(is_a($test, self::TestClass));
         $this->assertTrue(is_a($test, self::TestInterface));
         $this->assertTrue(is_a($test, self::ProxyClass));
@@ -58,7 +65,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase {
      */
     protected function getService() {
         $serviceBuilder = new Json();
-        return $serviceBuilder->build(new Uri(), self::TestInterface, null);
+        return $serviceBuilder->build(new Uri('http://foo'), self::TestInterface, null);
     }
 }
  

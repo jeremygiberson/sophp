@@ -24,7 +24,8 @@ class JsonTest extends PHPUnit_Framework_TestCase {
 
         $serviceNames = array();
         $json = new Json($this->interface, $this->concrete);
-        $definition = $json->build(new Uri(), $this->interface, $this->concrete);
+        $service = $json->build(new Uri(), $this->interface, $this->concrete);
+        $definition = $service->getDefinition();
         foreach($definition->getMethods() as $method) {
             /** @var $method Service */
             $name = $method->getName();

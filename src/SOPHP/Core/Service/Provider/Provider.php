@@ -11,6 +11,7 @@ use SOPHP\Core\Service\Service;
 use SplObjectStorage;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Class Provider
@@ -124,6 +125,9 @@ class Provider implements ServiceLocatorAwareInterface {
      */
     public function getServiceLocator()
     {
+        if(!$this->serviceLocator) {
+            $this->serviceLocator = new ServiceManager();
+        }
         return $this->serviceLocator;
     }
 }

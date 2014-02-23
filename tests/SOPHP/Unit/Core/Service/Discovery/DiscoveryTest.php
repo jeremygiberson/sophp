@@ -55,7 +55,7 @@ class DiscoveryTest extends PHPUnit_Framework_TestCase {
      */
     protected function getService() {
         $serviceBuilder = new Json();
-        return $serviceBuilder->build(new Uri(), self::TestInterface, null);
+        return $serviceBuilder->build(new Uri('http://foo'), self::TestInterface, null);
     }
 
 }
