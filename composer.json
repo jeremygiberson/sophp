@@ -1,5 +1,5 @@
 {
-    "name": "jeremygiberson/sophp",
+    "name": "so-php/sophp",
     "description": "Service Oriented PHP",
     "minimum-stability": "stable",
     "authors": [
@@ -8,6 +8,9 @@
             "email": "jeremygiberson@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {"SOPHP\\": "src/SOPHP"}
+    },    
     "require": {
         "zendframework/zendframework": ">=2.2.0",
         "composer/composer": "~1.0@alpha"
