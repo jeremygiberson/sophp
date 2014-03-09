@@ -38,7 +38,7 @@ class MongoTest extends \PHPUnit_Framework_TestCase {
         $test = $this->mongo->get($key);
         $this->assertEquals($value, $test);
         $test = $this->mongo->getAll();
-        $this->assertEquals(array($value), $test);
+        $this->assertEquals(array($key => $value), $test);
 
         $mongo = $this->getFreshMongo();
         $this->assertTrue($mongo->has($key));

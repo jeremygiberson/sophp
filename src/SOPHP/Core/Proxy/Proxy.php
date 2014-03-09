@@ -12,6 +12,7 @@ use Zend\Json\Server\Client;
 use Zend\Log\Logger;
 use Zend\Log\LoggerAwareInterface;
 use Zend\Log\LoggerInterface;
+use Zend\Log\Writer\Null;
 
 abstract class Proxy implements ClientAwareInterface, LoggerAwareInterface {
     /** @var  Client */
@@ -81,6 +82,7 @@ abstract class Proxy implements ClientAwareInterface, LoggerAwareInterface {
     {
         if(!$this->_log) {
             $this->_log = new Logger();
+            $this->_log->addWriter(new Null());
         }
         return $this->_log;
     }
