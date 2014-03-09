@@ -107,10 +107,10 @@ class Mongo implements AdapterInterface {
      */
     public function getAll()
     {
-        $results = $this->getMongoCollection()->find(array(),array('value'));
+        $results = $this->getMongoCollection()->find(array(),array('key', 'value'));
         $values = array();
         foreach($results as $result) {
-            $values[] = $result['value'];
+            $values[$result['key']] = $result['value'];
         }
         return $values;
     }
