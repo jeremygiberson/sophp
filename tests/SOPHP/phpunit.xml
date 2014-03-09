@@ -26,5 +26,10 @@
     <php>
         <const name="WEB_SERVER_HOST" value="0.0.0.0" />
         <const name="WEB_SERVER_PORT" value="8000" />
+        <const name="MONGO_HOST" value="localhost"/>
+        <const name="MONGO_PORT" value="27017"/>
+        <const name="MONGO_USER" value=""/>
+        <const name="MONGO_PASSWORD" value=""/>
+        <const name="MONGO_DATABASE" value="test_sophp_core_service_discovery_registry_storage_mongo"/>
     </php>
 </phpunit>
