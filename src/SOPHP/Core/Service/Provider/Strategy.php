@@ -14,4 +14,11 @@ class Strategy /* extends \SplEnum */ {
     public function __construct($value = self::__default) {
         $this->value = $value;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getValue(){
+        return $this->value;
+    }
 } 

@@ -74,7 +74,7 @@ class Provider implements ServiceLocatorAwareInterface {
         $strategy = $this->getStrategyPreferences()->contains($service) ?
             $this->getStrategyPreferences()->offsetGet($service) : new Strategy();
 
-        switch($strategy) {
+        switch($strategy->getValue()) {
             case Strategy::Local:
                 return $this->getLocalInstance($service);
                 break;
