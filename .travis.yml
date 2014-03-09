@@ -5,6 +5,7 @@ php:
   - "5.3"
 install:
   - composer install
+  - composer update
 before_script:
   - cd tests/SOPHP
-script: phpunit ./
+script: phpunit -c phpunit.xml ./
