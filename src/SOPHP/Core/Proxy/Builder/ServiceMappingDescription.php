@@ -70,7 +70,7 @@ class ServiceMappingDescription implements BuilderInterface {
         $source = $generator->generate();
 
         try {
-            eval($source);
+            @eval($source);
         } catch (\Exception $e) {
             throw new BuildFailed($className,$e);
         }
