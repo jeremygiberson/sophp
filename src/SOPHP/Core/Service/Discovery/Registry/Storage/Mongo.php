@@ -107,11 +107,12 @@ class Mongo implements AdapterInterface {
      */
     public function getAll()
     {
-        $result = $this->getMongoCollection()->find(array(),array('value'));
-        if($result) {
-            return array_map(function($item){return $item['value'];}, $result);
+        $results = $this->getMongoCollection()->find(array(),array('value'));
+        $values = array();
+        foreach($results as $result) {
+            $values[] = $result['value'];
         }
-        return array();
+        return $values;
     }
 
     /**

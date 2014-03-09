@@ -13,6 +13,7 @@
     },    
     "require": {
         "zendframework/zendframework": ">=2.2.0",
-        "composer/composer": "~1.0@alpha"
+        "composer/composer": "~1.0@alpha",
+        "phpunit/phpunit": "3.7.*"
     }
 }

@@ -25,6 +25,10 @@ class MongoTest extends \PHPUnit_Framework_TestCase {
         $this->mongo = $this->getFreshMongo();
     }
 
+    public function tearDown() {
+        $this->mongo->getMongoCollection()->drop();
+    }
+
     public function test() {
         $key = uniqid();
         $value = uniqid();
@@ -33,6 +37,8 @@ class MongoTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->mongo->has($key));
         $test = $this->mongo->get($key);
         $this->assertEquals($value, $test);
+        $test = $this->mongo->getAll();
+        $this->assertEquals(array($value), $test);
 
         $mongo = $this->getFreshMongo();
         $this->assertTrue($mongo->has($key));
